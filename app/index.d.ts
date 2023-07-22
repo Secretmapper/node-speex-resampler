@@ -23,7 +23,7 @@ declare class SpeexResampler {
     constructor(channels: any, inRate: any, outRate: any, quality?: number);
     /**
       * Resample a chunk of audio.
-      * @param chunk interleaved PCM data in signed 16bits int
+      * @param chunk interleaved PCM data in float32
       */
     processChunk(chunk: Buffer): Buffer;
 }

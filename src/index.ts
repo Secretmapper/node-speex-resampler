@@ -9,6 +9,7 @@ interface EmscriptenModuleOpusEncoder extends EmscriptenModule {
   _speex_resampler_destroy(resamplerPtr: number): void;
   _speex_resampler_get_rate(resamplerPtr: number, inRatePtr: number, outRatePtr: number);
   _speex_resampler_process_interleaved_int(resamplerPtr: number, inBufferPtr: number, inLenPtr: number, outBufferPtr: number, outLenPtr: number): number;
+  _speex_resampler_process_interleaved_float(resamplerPtr: number, inBufferPtr: number, inLenPtr: number, outBufferPtr: number, outLenPtr: number): number;
   _speex_resampler_strerror(err: number): number;
 
   getValue(ptr: number, type: string): any;
@@ -46,14 +47,14 @@ class SpeexResampler {
 
   /**
     * Resample a chunk of audio.
-    * @param chunk interleaved PCM data in signed 16bits int
+    * @param chunk interleaved PCM data in float32
     */
   processChunk(chunk: Buffer) {
     if (!speexModule) {
       throw new Error('You need to wait for SpeexResampler.initPromise before calling this method');
     }
     // We check that we have as many chunks for each channel and that the last chunk is full (2 bytes)
-    if (chunk.length % (this.channels * Uint16Array.BYTES_PER_ELEMENT) !== 0) {
+    if (chunk.length % (this.channels * Float32Array.BYTES_PER_ELEMENT) !== 0) {
       throw new Error('Chunk length should be a multiple of channels * 2 bytes');
     }
 
@@ -88,13 +89,13 @@ class SpeexResampler {
     }
 
     // number of samples per channel in input buffer
-    speexModule.setValue(this._inLengthPtr, chunk.length / this.channels / Uint16Array.BYTES_PER_ELEMENT, 'i32');
+    speexModule.setValue(this._inLengthPtr, chunk.length / this.channels / Float32Array.BYTES_PER_ELEMENT, 'i32');
     // Copying the info from the input Buffer in the WASM memory space
     speexModule.HEAPU8.set(chunk, this._inBufferPtr);
 
     // number of samples per channels available in output buffer
-    speexModule.setValue(this._outLengthPtr, this._outBufferSize / this.channels / Uint16Array.BYTES_PER_ELEMENT, 'i32');
-    const errNum = speexModule._speex_resampler_process_interleaved_int(
+    speexModule.setValue(this._outLengthPtr, this._outBufferSize / this.channels / Float32Array.BYTES_PER_ELEMENT, 'i32');
+    const errNum = speexModule._speex_resampler_process_interleaved_float(
       this._resamplerPtr,
       this._inBufferPtr,
       this._inLengthPtr,
@@ -112,7 +113,7 @@ class SpeexResampler {
     return Buffer.from(
       speexModule.HEAPU8.slice(
         this._outBufferPtr,
-        this._outBufferPtr + outSamplesPerChannelsWritten * this.channels * Uint16Array.BYTES_PER_ELEMENT
+        this._outBufferPtr + outSamplesPerChannelsWritten * this.channels * Float32Array.BYTES_PER_ELEMENT
       ).buffer);
   }
 }
