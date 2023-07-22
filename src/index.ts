@@ -2,6 +2,7 @@
 
 import { Transform } from 'stream';
 import SpeexWasm from './speex_wasm';
+import { Buffer } from 'buffer'
 
 interface EmscriptenModuleOpusEncoder extends EmscriptenModule {
   _speex_resampler_init(nbChannels: number, inRate: number, outRate: number, quality: number, errPointer: number): number;
