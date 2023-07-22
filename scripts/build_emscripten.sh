@@ -17,6 +17,6 @@ emcc \
   -s ENVIRONMENT=web \
   -D FLOATING_POINT=true \
   -D OUTSIDE_SPEEX=true \
-  -s EXPORTED_FUNCTIONS="['_malloc', '_free', '_speex_resampler_destroy','_speex_resampler_init','_speex_resampler_get_rate','_speex_resampler_process_interleaved_int','_speex_resampler_strerror']" \
+  -s EXPORTED_FUNCTIONS="['_malloc', '_free', '_speex_resampler_destroy','_speex_resampler_init','_speex_resampler_get_rate','_speex_resampler_process_interleaved_float','_speex_resampler_strerror']" \
   --llvm-lto 1 \
   ./deps/speex/resample.c
