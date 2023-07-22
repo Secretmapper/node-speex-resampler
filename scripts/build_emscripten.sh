@@ -14,7 +14,7 @@ emcc \
   -s FILESYSTEM=0 \
   -s ASSERTIONS=0 \
   -s EXPORTED_RUNTIME_METHODS="['setValue', 'getValue', 'AsciiToString']" \
-  -s ENVIRONMENT=node,web \
+  -s ENVIRONMENT=web \
   -D FLOATING_POINT=true \
   -D OUTSIDE_SPEEX=true \
   -s EXPORTED_FUNCTIONS="['_malloc', '_free', '_speex_resampler_destroy','_speex_resampler_init','_speex_resampler_get_rate','_speex_resampler_process_interleaved_int','_speex_resampler_strerror']" \
